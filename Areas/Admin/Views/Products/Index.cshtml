@@ -1,0 +1,104 @@
+@* صفحة قائمة المنتجات في لوحة التحكم *@
+@model List<StoreWebsite.Models.Product>
+
+@{
+    // عنوان الصفحة الذي يظهر في تبويب المتصفح
+    ViewData["Title"] = "إدارة المنتجات";
+}
+
+@* صف العنوان وزر الإضافة *@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    @* عنوان الصفحة *@
+    <h1 class="fw-bold mb-0">إدارة المنتجات</h1>
+    @* زر إضافة منتج جديد *@
+    <a asp-area="Admin" asp-controller="Products" asp-action="Create" class="btn btn-primary">+ إضافة منتج</a>
+</div>
+
+@* نموذج البحث في المنتجات *@
+<form asp-area="Admin" asp-controller="Products" asp-action="Index" method="get" class="d-flex gap-2 mb-4">
+    @* حقل كلمة البحث *@
+    <input name="searchTerm" class="form-control" placeholder="ابحث عن منتج..." value="@ViewBag.SearchTerm" />
+    @* زر البحث *@
+    <button type="submit" class="btn btn-outline-primary">بحث</button>
+</form>
+
+@* جدول المنتجات *@
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                @* رأس الجدول *@
+                <thead class="table-light">
+                    <tr>
+                        <th>الصورة</th>
+                        <th>الاسم</th>
+                        <th>الفئة</th>
+                        <th>السعر</th>
+                        <th>سعر العرض</th>
+                        <th>المخزون</th>
+                        <th>المبيعات</th>
+                        <th>مميز</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+                @* جسم الجدول *@
+                <tbody>
+                    @* نمر على المنتجات *@
+                    @foreach (var product in Model)
+                    {
+                        @* صف كل منتج *@
+                        <tr>
+                            @* صورة مصغرة للمنتج *@
+                            <td>
+                                <img src="@product.ImageUrl" alt="@product.Name" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+                            </td>
+                            @* اسم المنتج *@
+                            <td class="fw-bold">@product.Name</td>
+                            @* اسم الفئة *@
+                            <td>@product.Category?.Name</td>
+                            @* السعر الأصلي *@
+                            <td>@product.Price.ToString("0.##") ج.م</td>
+                            @* سعر العرض أو نص لا يوجد *@
+                            <td>@(product.OfferPrice?.ToString("0.##") + (product.OfferPrice.HasValue ? " ج.م" : ""))</td>
+                            @* الكمية في المخزون مع تلوين حسب الكمية *@
+                            <td>
+                                @if (product.StockQuantity <= 0)
+                                {
+                                    @* أحمر عندما ينفد المخزون *@
+                                    <span class="badge bg-danger">نفد</span>
+                                }
+                                else
+                                {
+                                    @* أخضر عندما يكون متوفراً *@
+                                    <span class="badge bg-success">@product.StockQuantity</span>
+                                }
+                            </td>
+                            @* عدد مرات البيع *@
+                            <td>@product.NumberOfSales</td>
+                            @* هل المنتج مميز *@
+                            <td>
+                                @if (product.IsFeatured)
+                                {
+                                    @* علامة نعم *@
+                                    <span class="text-success">✔</span>
+                                }
+                                else
+                                {
+                                    @* علامة لا *@
+                                    <span class="text-muted">✖</span>
+                                }
+                            </td>
+                            @* أزرار الإجراءات *@
+                            <td>
+                                @* زر التعديل *@
+                                <a asp-area="Admin" asp-controller="Products" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-outline-primary">تعديل</a>
+                                @* زر الحذف *@
+                                <a asp-area="Admin" asp-controller="Products" asp-action="Delete" asp-route-id="@product.Id" class="btn btn-sm btn-outline-danger">حذف</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

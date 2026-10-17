@@ -1,0 +1,138 @@
+@* صفحة تفاصيل طلب في لوحة التحكم *@
+@model StoreWebsite.Models.Order
+
+@{
+    // عنوان الصفحة الذي يظهر في تبويب المتصفح
+    ViewData["Title"] = $"تفاصيل الطلب #{Model.Id}";
+}
+
+@* صف العنوان وزر الرجوع *@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    @* عنوان الصفحة مع رقم الطلب *@
+    <h1 class="fw-bold mb-0">تفاصيل الطلب #@Model.Id</h1>
+    @* زر الرجوع لقائمة الطلبات *@
+    <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="btn btn-outline-secondary">↩ رجوع للطلبات</a>
+</div>
+
+@* بطاقة بيانات الطلب *@
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        @* صف بيانات الطلب *@
+        <div class="row">
+            @* عمود الحالة مع نموذج تغييرها *@
+            <div class="col-md-4">
+                @* تسمية الحالة *@
+                <small class="text-muted">تغيير حالة الطلب</small>
+                @* نموذج تحديث حالة الطلب *@
+                <form asp-area="Admin" asp-controller="Orders" asp-action="UpdateStatus" method="post" class="d-flex gap-2 mt-1">
+                    @* رقم الطلب المخفي *@
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    @* قائمة منسدلة للحالات المتاحة *@
+                    <select name="status" class="form-select">
+                        @* الخيارات مع تحديد الحالة الحالية *@
+                        <option value="قيد الانتظار" selected="@(Model.Status == "قيد الانتظار")">قيد الانتظار</option>
+                        <option value="تم التأكيد" selected="@(Model.Status == "تم التأكيد")">تم التأكيد</option>
+                        <option value="تم الشحن" selected="@(Model.Status == "تم الشحن")">تم الشحن</option>
+                        <option value="تم التوصيل" selected="@(Model.Status == "تم التوصيل")">تم التوصيل</option>
+                        <option value="ملغي" selected="@(Model.Status == "ملغي")">ملغي</option>
+                    </select>
+                    @* زر تحديث الحالة *@
+                    <button type="submit" class="btn btn-primary">تحديث</button>
+                    @* حماية النموذج من التزوير *@
+                    @Html.AntiForgeryToken()
+                </form>
+            </div>
+
+            @* عمود تاريخ الطلب *@
+            <div class="col-md-4">
+                @* تسمية التاريخ *@
+                <small class="text-muted">تاريخ الطلب</small>
+                @* قيمة التاريخ *@
+                <div class="fw-bold">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</div>
+            </div>
+
+            @* عمود طريقة الدفع *@
+            <div class="col-md-4">
+                @* تسمية طريقة الدفع *@
+                <small class="text-muted">طريقة الدفع</small>
+                @* قيمة طريقة الدفع *@
+                <div class="fw-bold">@Model.PaymentMethod</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* صف عمودين: بيانات العميل وعناصر الطلب *@
+<div class="row g-4">
+    @* ---------- عمود بيانات العميل ---------- *@
+    <div class="col-md-5">
+        @* بطاقة بيانات العميل *@
+        <div class="card shadow-sm">
+            <div class="card-body">
+                @* عنوان البطاقة *@
+                <h5 class="fw-bold mb-3">بيانات العميل</h5>
+                @* الاسم الكامل *@
+                <p class="mb-1"><strong>الاسم:</strong> @Model.FullName</p>
+                @* البريد الإلكتروني *@
+                <p class="mb-1"><strong>البريد:</strong> @Model.User?.Email</p>
+                @* رقم الهاتف *@
+                <p class="mb-1"><strong>الهاتف:</strong> @Model.Phone</p>
+                @* العنوان *@
+                <p class="mb-1"><strong>العنوان:</strong> @Model.Address</p>
+                @* المدينة *@
+                <p class="mb-0"><strong>المدينة:</strong> @Model.City</p>
+            </div>
+        </div>
+    </div>
+
+    @* ---------- عمود عناصر الطلب ---------- *@
+    <div class="col-md-7">
+        @* بطاقة عناصر الطلب *@
+        <div class="card shadow-sm">
+            <div class="card-body">
+                @* عنوان البطاقة *@
+                <h5 class="fw-bold mb-3">المنتجات المطلوبة</h5>
+                @* جدول عناصر الطلب *@
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        @* رأس الجدول *@
+                        <thead class="table-light">
+                            <tr>
+                                <th>المنتج</th>
+                                <th>السعر</th>
+                                <th>الكمية</th>
+                                <th>الإجمالي</th>
+                            </tr>
+                        </thead>
+                        @* جسم الجدول *@
+                        <tbody>
+                            @* نمر على عناصر الطلب *@
+                            @foreach (var item in Model.OrderItems!)
+                            {
+                                @* صف كل عنصر *@
+                                <tr>
+                                    @* اسم المنتج *@
+                                    <td>@item.ProductName</td>
+                                    @* سعر القطعة *@
+                                    <td>@item.Price.ToString("0.##") ج.م</td>
+                                    @* الكمية *@
+                                    <td>@item.Quantity</td>
+                                    @* إجمالي المنتج *@
+                                    <td class="fw-bold">@item.Total.ToString("0.##") ج.م</td>
+                                </tr>
+                            }
+                        </tbody>
+                        @* تذييل الجدول *@
+                        <tfoot>
+                            <tr class="table-light">
+                                @* النص والإجمالي الكلي *@
+                                <th colspan="3" class="text-end">الإجمالي الكلي</th>
+                                <th class="text-primary">@Model.TotalAmount.ToString("0.##") ج.م</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

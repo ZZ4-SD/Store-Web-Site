@@ -1,0 +1,152 @@
+@* لوحة تحكم الأدمن الرئيسية (داشبورد) *@
+@model DashboardViewModel
+
+@{
+    // عنوان الصفحة الذي يظهر في تبويب المتصفح
+    ViewData["Title"] = "لوحة التحكم";
+}
+
+@* عنوان الصفحة *@
+<h1 class="fw-bold mb-4">لوحة التحكم</h1>
+
+@* ---------- بطاقات الإحصائيات ---------- *@
+<div class="row g-4 mb-4">
+    @* بطاقة عدد المنتجات *@
+    <div class="col-md-6 col-lg-4">
+        @* بطاقة إحصائية باللون الأزرق *@
+        <div class="stat-card stat-blue shadow-sm">
+            @* رقم الإحصائية *@
+            <div class="stat-number">@Model.TotalProducts</div>
+            @* تسمية الإحصائية *@
+            <div class="stat-label">إجمالي المنتجات</div>
+        </div>
+    </div>
+
+    @* بطاقة عدد الفئات *@
+    <div class="col-md-6 col-lg-4">
+        @* بطاقة إحصائية باللون الأخضر *@
+        <div class="stat-card stat-green shadow-sm">
+            @* رقم الإحصائية *@
+            <div class="stat-number">@Model.TotalCategories</div>
+            @* تسمية الإحصائية *@
+            <div class="stat-label">إجمالي الفئات</div>
+        </div>
+    </div>
+
+    @* بطاقة عدد الطلبات *@
+    <div class="col-md-6 col-lg-4">
+        @* بطاقة إحصائية باللون البنفسجي *@
+        <div class="stat-card stat-purple shadow-sm">
+            @* رقم الإحصائية *@
+            <div class="stat-number">@Model.TotalOrders</div>
+            @* تسمية الإحصائية *@
+            <div class="stat-label">إجمالي الطلبات</div>
+        </div>
+    </div>
+
+    @* بطاقة إجمالي الإيرادات *@
+    <div class="col-md-6 col-lg-4">
+        @* بطاقة إحصائية باللون البرتقالي *@
+        <div class="stat-card stat-orange shadow-sm">
+            @* رقم الإحصائية *@
+            <div class="stat-number">@Model.TotalRevenue.ToString("0.##") ج.م</div>
+            @* تسمية الإحصائية *@
+            <div class="stat-label">إجمالي الإيرادات</div>
+        </div>
+    </div>
+
+    @* بطاقة عدد المستخدمين *@
+    <div class="col-md-6 col-lg-4">
+        @* بطاقة إحصائية باللون الأحمر *@
+        <div class="stat-card stat-red shadow-sm">
+            @* رقم الإحصائية *@
+            <div class="stat-number">@Model.TotalUsers</div>
+            @* تسمية الإحصائية *@
+            <div class="stat-label">عدد المستخدمين</div>
+        </div>
+    </div>
+</div>
+
+@* ---------- صف الجداول ---------- *@
+<div class="row g-4">
+    @* ---------- جدول أحدث الطلبات ---------- *@
+    <div class="col-lg-7">
+        @* بطاقة أحدث الطلبات *@
+        <div class="card shadow-sm">
+            <div class="card-header bg-white fw-bold">أحدث الطلبات</div>
+            <div class="card-body p-0">
+                @* جدول الطلبات *@
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        @* رأس الجدول *@
+                        <thead class="table-light">
+                            <tr>
+                                <th>رقم الطلب</th>
+                                <th>العميل</th>
+                                <th>التاريخ</th>
+                                <th>الإجمالي</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        @* جسم الجدول *@
+                        <tbody>
+                            @* نمر على أحدث الطلبات *@
+                            @foreach (var order in Model.RecentOrders)
+                            {
+                                @* صف كل طلب *@
+                                <tr>
+                                    @* رقم الطلب مع رابط لتفاصيله *@
+                                    <td><a asp-area="Admin" asp-controller="Orders" asp-action="Details" asp-route-id="@order.Id" class="fw-bold">#@order.Id</a></td>
+                                    @* اسم العميل *@
+                                    <td>@order.FullName</td>
+                                    @* تاريخ الطلب *@
+                                    <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                                    @* قيمة الطلب *@
+                                    <td>@order.TotalAmount.ToString("0.##") ج.م</td>
+                                    @* حالة الطلب *@
+                                    <td><span class="badge bg-secondary">@order.Status</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* ---------- جدول الأكثر مبيعاً ---------- *@
+    <div class="col-lg-5">
+        @* بطاقة المنتجات الأكثر مبيعاً *@
+        <div class="card shadow-sm">
+            <div class="card-header bg-white fw-bold">الأكثر مبيعاً</div>
+            <div class="card-body p-0">
+                @* جدول المنتجات *@
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        @* رأس الجدول *@
+                        <thead class="table-light">
+                            <tr>
+                                <th>المنتج</th>
+                                <th>المبيعات</th>
+                            </tr>
+                        </thead>
+                        @* جسم الجدول *@
+                        <tbody>
+                            @* نمر على المنتجات الأكثر مبيعاً *@
+                            @foreach (var product in Model.BestSellingProducts)
+                            {
+                                @* صف كل منتج *@
+                                <tr>
+                                    @* اسم المنتج *@
+                                    <td>@product.Name</td>
+                                    @* عدد المبيعات *@
+                                    <td><span class="badge bg-success">@product.NumberOfSales</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

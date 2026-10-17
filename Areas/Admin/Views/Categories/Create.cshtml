@@ -1,0 +1,55 @@
+@* صفحة إضافة فئة جديدة في لوحة التحكم *@
+@model StoreWebsite.Models.Category
+
+@{
+    // عنوان الصفحة الذي يظهر في تبويب المتصفح
+    ViewData["Title"] = "إضافة فئة";
+}
+
+@* عنوان الصفحة *@
+<h1 class="fw-bold mb-4">إضافة فئة جديدة</h1>
+
+@* بطاقة النموذج *@
+<div class="card shadow-sm">
+    <div class="card-body">
+        @* نموذج إضافة الفئة *@
+        <form asp-area="Admin" asp-controller="Categories" asp-action="Create" method="post">
+            @* حقل اسم الفئة *@
+            <div class="mb-3">
+                @* تسمية الحقل *@
+                <label asp-for="Name" class="form-label fw-bold"></label>
+                @* حقل إدخال الاسم *@
+                <input asp-for="Name" class="form-control" placeholder="اسم الفئة" />
+                @* رسالة خطأ التحقق *@
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            @* حقل وصف الفئة *@
+            <div class="mb-3">
+                @* تسمية الحقل *@
+                <label asp-for="Description" class="form-label fw-bold"></label>
+                @* مساحة كتابة الوصف *@
+                <textarea asp-for="Description" class="form-control" rows="3" placeholder="وصف الفئة"></textarea>
+            </div>
+
+            @* حقل رابط صورة الفئة *@
+            <div class="mb-3">
+                @* تسمية الحقل *@
+                <label asp-for="ImageUrl" class="form-label fw-bold">رابط الصورة</label>
+                @* حقل إدخال الرابط *@
+                <input asp-for="ImageUrl" class="form-control" placeholder="/images/categories/men.svg" />
+            </div>
+
+            @* أزرار النموذج *@
+            <div class="d-flex gap-2">
+                @* زر حفظ الفئة *@
+                <button type="submit" class="btn btn-primary">حفظ الفئة</button>
+                @* زر الرجوع للقائمة *@
+                <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="btn btn-outline-secondary">إلغاء</a>
+            </div>
+
+            @* حماية النموذج من التزوير *@
+            @Html.AntiForgeryToken()
+        </form>
+    </div>
+</div>

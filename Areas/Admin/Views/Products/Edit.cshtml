@@ -1,0 +1,133 @@
+@* صفحة تعديل منتج في لوحة التحكم *@
+@model StoreWebsite.Models.Product
+
+@{
+    // عنوان الصفحة الذي يظهر في تبويب المتصفح
+    ViewData["Title"] = "تعديل منتج";
+}
+
+@* عنوان الصفحة *@
+<h1 class="fw-bold mb-4">تعديل منتج</h1>
+
+@* بطاقة النموذج *@
+<div class="card shadow-sm">
+    <div class="card-body">
+        @* نموذج تعديل المنتج *@
+        <form asp-area="Admin" asp-controller="Products" asp-action="Edit" method="post">
+            @* رقم المنتج المخفي ليعرف التحكم المنتج المطلوب تعديله *@
+            <input type="hidden" asp-for="Id" />
+
+            @* صف الاسم والوصف *@
+            <div class="row">
+                @* حقل اسم المنتج *@
+                <div class="col-md-6 mb-3">
+                    @* تسمية الحقل *@
+                    <label asp-for="Name" class="form-label fw-bold"></label>
+                    @* حقل إدخال الاسم *@
+                    <input asp-for="Name" class="form-control" />
+                    @* رسالة خطأ التحقق *@
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                @* حقل اختيار الفئة *@
+                <div class="col-md-6 mb-3">
+                    @* تسمية الحقل *@
+                    <label asp-for="CategoryId" class="form-label fw-bold">الفئة</label>
+                    @* قائمة منسدلة للفئات مع تحديد الفئة الحالية *@
+                    <select asp-for="CategoryId" class="form-select">
+                        @* نمر على الفئات المتاحة *@
+                        @foreach (var cat in ViewBag.Categories)
+                        {
+                            @* خيار كل فئة *@
+                            <option value="@cat.Id">@cat.Name</option>
+                        }
+                    </select>
+                    @* رسالة خطأ التحقق *@
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+            </div>
+
+            @* حقل الوصف *@
+            <div class="mb-3">
+                @* تسمية الحقل *@
+                <label asp-for="Description" class="form-label fw-bold"></label>
+                @* مساحة كتابة الوصف *@
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            </div>
+
+            @* صف الأسعار *@
+            <div class="row">
+                @* حقل السعر الأصلي *@
+                <div class="col-md-4 mb-3">
+                    @* تسمية الحقل *@
+                    <label asp-for="Price" class="form-label fw-bold"></label>
+                    @* حقل إدخال السعر *@
+                    <input asp-for="Price" class="form-control" type="number" step="0.01" />
+                    @* رسالة خطأ التحقق *@
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                @* حقل سعر العرض *@
+                <div class="col-md-4 mb-3">
+                    @* تسمية الحقل *@
+                    <label asp-for="OfferPrice" class="form-label fw-bold">سعر العرض (اختياري)</label>
+                    @* حقل إدخال سعر العرض *@
+                    <input asp-for="OfferPrice" class="form-control" type="number" step="0.01" />
+                    @* رسالة خطأ التحقق *@
+                    <span asp-validation-for="OfferPrice" class="text-danger"></span>
+                </div>
+
+                @* حقل كمية المخزون *@
+                <div class="col-md-4 mb-3">
+                    @* تسمية الحقل *@
+                    <label asp-for="StockQuantity" class="form-label fw-bold"></label>
+                    @* حقل إدخال المخزون *@
+                    <input asp-for="StockQuantity" class="form-control" type="number" min="0" />
+                    @* رسالة خطأ التحقق *@
+                    <span asp-validation-for="StockQuantity" class="text-danger"></span>
+                </div>
+            </div>
+
+            @* صف الرابط والخيارات *@
+            <div class="row">
+                @* حقل رابط صورة المنتج *@
+                <div class="col-md-8 mb-3">
+                    @* تسمية الحقل *@
+                    <label asp-for="ImageUrl" class="form-label fw-bold">رابط الصورة</label>
+                    @* حقل إدخال رابط الصورة *@
+                    <input asp-for="ImageUrl" class="form-control" />
+                    @* رسالة خطأ التحقق *@
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                </div>
+
+                @* خيار المنتج المميز *@
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+                    @* مربع الاختيار *@
+                    <div class="form-check form-switch">
+                        @* مربع تفعيل الميزة *@
+                        <input asp-for="IsFeatured" class="form-check-input" />
+                        @* تسمية الخيار *@
+                        <label asp-for="IsFeatured" class="form-check-label fw-bold">منتج مميز</label>
+                    </div>
+                </div>
+            </div>
+
+            @* أزرار النموذج *@
+            <div class="d-flex gap-2">
+                @* زر حفظ التعديلات *@
+                <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+                @* زر الرجوع للقائمة *@
+                <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="btn btn-outline-secondary">إلغاء</a>
+            </div>
+
+            @* حماية النموذج من التزوير *@
+            @Html.AntiForgeryToken()
+        </form>
+    </div>
+</div>
+
+@* قسم السكربتات (تفعيل التحقق من البيانات في المتصفح) *@
+@section Scripts {
+    @* التحقق من صحة البيانات في المتصفح قبل الإرسال *@
+    <partial name="_ValidationScriptsPartial" />
+}

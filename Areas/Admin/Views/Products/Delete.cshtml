@@ -1,0 +1,45 @@
+@* صفحة تأكيد حذف منتج في لوحة التحكم *@
+@model StoreWebsite.Models.Product
+
+@{
+    // عنوان الصفحة الذي يظهر في تبويب المتصفح
+    ViewData["Title"] = "حذف منتج";
+}
+
+@* عنوان الصفحة *@
+<h1 class="fw-bold mb-4">حذف منتج</h1>
+
+@* بطاقة تأكيد الحذف *@
+<div class="card shadow-sm border-danger">
+    <div class="card-body">
+        @* رسالة تحذير *@
+        <div class="alert alert-danger">
+            @* نص التحذير *@
+            هل أنت متأكد من حذف المنتج "<strong>@Model.Name</strong>"؟ لا يمكن التراجع عن هذا الإجراء.
+        </div>
+
+        @* عرض بيانات المنتج قبل الحذف *@
+        <div class="d-flex align-items-center gap-3 mb-4">
+            @* صورة المنتج *@
+            <img src="@Model.ImageUrl" alt="@Model.Name" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+            @* اسم المنتج *@
+            <div>
+                <h5 class="fw-bold mb-1">@Model.Name</h5>
+                @* الفئة والسعر *@
+                <span class="text-muted">@Model.Category?.Name - @Model.Price.ToString("0.##") ج.م</span>
+            </div>
+        </div>
+
+        @* نموذج تأكيد الحذف *@
+        <form asp-area="Admin" asp-controller="Products" asp-action="Delete" method="post">
+            @* رقم المنتج المطلوب حذفه *@
+            <input type="hidden" name="id" value="@Model.Id" />
+            @* زر تأكيد الحذف *@
+            <button type="submit" class="btn btn-danger">نعم، احذف المنتج</button>
+            @* زر الرجوع للقائمة *@
+            <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="btn btn-outline-secondary">إلغاء</a>
+            @* حماية النموذج من التزوير *@
+            @Html.AntiForgeryToken()
+        </form>
+    </div>
+</div>

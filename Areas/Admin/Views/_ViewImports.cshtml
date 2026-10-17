@@ -1,0 +1,11 @@
+@* هذا الملف يحتوي على الاستيرادات المشتركة لجميع صفحات لوحة تحكم الأدمن *@
+@* نستورد مساحة أسماء المشروع الرئيسية *@
+@using StoreWebsite
+@* نستورد نماذج البيانات (المنتجات، الفئات، الطلبات...) *@
+@using StoreWebsite.Models
+@* نستورد نماذج العرض (ViewModels) *@
+@using StoreWebsite.ViewModels
+@* نستورد خدمة السلة للوصول إليها داخل الواجهات *@
+@using StoreWebsite.Services
+@* نفعّل Tag Helpers الجاهزة في MVC (مثل asp-controller و asp-action) *@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

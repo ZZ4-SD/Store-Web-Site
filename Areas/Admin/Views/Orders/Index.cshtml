@@ -1,0 +1,124 @@
+@* صفحة قائمة الطلبات في لوحة التحكم *@
+@model List<StoreWebsite.Models.Order>
+
+@{
+    // عنوان الصفحة الذي يظهر في تبويب المتصفح
+    ViewData["Title"] = "إدارة الطلبات";
+}
+
+@* عنوان الصفحة *@
+<h1 class="fw-bold mb-4">إدارة الطلبات</h1>
+
+@* شريط فلترة الطلبات حسب الحالة *@
+<div class="mb-4">
+    @* نحدد حالات الفلترة المتاحة *@
+    @{
+        // قائمة الحالات مع القيم المرسلة للفلترة
+        var filters = new[]
+        {
+            // خيار عرض جميع الطلبات
+            ("All", "الكل"),
+            // خيار الطلبات قيد الانتظار
+            ("قيد الانتظار", "قيد الانتظار"),
+            // خيار الطلبات المؤكدة
+            ("تم التأكيد", "تم التأكيد"),
+            // خيار الطلبات المشحونة
+            ("تم الشحن", "تم الشحن"),
+            // خيار الطلبات الموصلة
+            ("تم التوصيل", "تم التوصيل"),
+            // خيار الطلبات الملغاة
+            ("ملغي", "ملغي")
+        };
+    }
+    @* روابط الفلترة *@
+    <div class="btn-group">
+        @* نمر على خيارات الفلترة *@
+        @foreach (var (value, label) in filters)
+        {
+            @* زر لكل حالة مع تحديد الحالة المختارة حالياً *@
+            <a asp-area="Admin" asp-controller="Orders" asp-action="Index" asp-route-status="@value"
+               class="btn @((ViewBag.Status == value) ? "btn-primary" : "btn-outline-primary")">
+                @* نص الحالة *@
+                @label
+            </a>
+        }
+    </div>
+</div>
+
+@* إذا كانت هناك طلبات *@
+@if (Model.Count > 0)
+{
+    @* جدول الطلبات *@
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    @* رأس الجدول *@
+                    <thead class="table-light">
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>العميل</th>
+                            <th>الهاتف</th>
+                            <th>التاريخ</th>
+                            <th>الإجمالي</th>
+                            <th>الحالة</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    @* جسم الجدول *@
+                    <tbody>
+                        @* نمر على الطلبات *@
+                        @foreach (var order in Model)
+                        {
+                            @* صف كل طلب *@
+                            <tr>
+                                @* رقم الطلب *@
+                                <td class="fw-bold">#@order.Id</td>
+                                @* اسم العميل *@
+                                <td>@order.FullName</td>
+                                @* رقم الهاتف *@
+                                <td>@order.Phone</td>
+                                @* تاريخ الطلب *@
+                                <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                                @* قيمة الطلب *@
+                                <td class="fw-bold">@order.TotalAmount.ToString("0.##") ج.م</td>
+                                @* حالة الطلب *@
+                                <td>
+                                    @{
+                                        // نحدد لون الشارة حسب الحالة
+                                        var statusColor = order.Status switch
+                                        {
+                                            "قيد الانتظار" => "bg-warning text-dark",
+                                            "تم التأكيد" => "bg-info text-dark",
+                                            "تم الشحن" => "bg-primary text-white",
+                                            "تم التوصيل" => "bg-success text-white",
+                                            "ملغي" => "bg-danger text-white",
+                                            _ => "bg-secondary text-white"
+                                        };
+                                    }
+                                    @* شارة الحالة *@
+                                    <span class="badge @statusColor">@order.Status</span>
+                                </td>
+                                @* زر عرض التفاصيل *@
+                                <td>
+                                    @* رابط صفحة تفاصيل الطلب *@
+                                    <a asp-area="Admin" asp-controller="Orders" asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-outline-primary">التفاصيل</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    @* رسالة عندما لا توجد طلبات *@
+    <div class="text-center py-5">
+        @* أيقونة *@
+        <h1 class="display-1">📦</h1>
+        @* نص لا توجد طلبات *@
+        <h4 class="text-muted">لا توجد طلبات في هذه الحالة</h4>
+    </div>
+}
