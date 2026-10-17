@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- حزمة Entity Framework Core الخاصة بخادم SQL Server (قاعدة البيانات المجانية) -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.10" />
+    <!-- حزمة أدوات EF Core لإنشاء وتحديث قاعدة البيانات -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.10" />
+    <!-- حزمة Identity الخاصة بأنظمة تسجيل الدخول والتسجيل والأدوار -->
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.10" />
+  </ItemGroup>
+
+</Project>
